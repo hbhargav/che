@@ -157,7 +157,8 @@ public class OrionEditorWidget extends Composite implements EditorWidget,
 
     private Keymap              keymap;
     private ContentAssistWidget assistWidget;
-    private Gutter              gutter;
+    private Gutter              breackPointsGutter;
+    private Gutter              vcsMarksGutter;
 
     private boolean changeHandlerAdded      = false;
     private boolean focusHandlerAdded       = false;
@@ -229,6 +230,16 @@ public class OrionEditorWidget extends Composite implements EditorWidget,
         OrionEventTargetOverlay.addMixin(orionEventTargetModule, orionLineNumberRuler);
 
         return new OrionBreakpointRuler(orionLineNumberRuler, editorOverlay);
+    }
+
+    private Gutter initVcsMarksRuller(ModuleHolder moduleHolder) {
+        JavaScriptObject orionEventTargetModule = moduleHolder.getModule("OrionEventTarget");
+
+        orionLineNumberRuler = editorOverlay.getTextView().getRulers()[1];
+        orionLineNumberRuler.overrideOnClickEvent();
+        OrionEventTargetOverlay.addMixin(orionEventTargetModule, orionLineNumberRuler);
+
+        return new OrionVcsMarksRuler(orionLineNumberRuler, editorOverlay);
     }
 
     @Override
@@ -721,6 +732,7 @@ public class OrionEditorWidget extends Composite implements EditorWidget,
                                                position.getOffset() + position.getLength(),
                                                annotation.getText());
     }
+
     private String getSeverity(String type, OrionAnnotationSeverityProvider provider) {
         if (provider != null) {
             return provider.getSeverity(type);
@@ -761,8 +773,15 @@ public class OrionEditorWidget extends Composite implements EditorWidget,
     }
 
     @Override
-    public Gutter getGutter() {
-        return gutter;
+    public Gutter getGutter(GutterType type) {
+        switch (type) {
+            case VCS_MARK:
+                return vcsMarksGutter;
+            case BREACKPOINT:
+                return breackPointsGutter;
+            default:
+                return null;
+        }
     }
 
     public int getTopVisibleLine() {
@@ -835,7 +854,8 @@ public class OrionEditorWidget extends Composite implements EditorWidget,
             cheContentAssistMode = OrionKeyModeOverlay.getCheCodeAssistMode(moduleHolder.getModule("CheContentAssistMode"),
                                                                             editorOverlay.getTextView());
             assistWidget = contentAssistWidgetFactory.create(OrionEditorWidget.this, cheContentAssistMode);
-            gutter = initBreakpointRuler(moduleHolder);
+            breackPointsGutter = initBreakpointRuler(moduleHolder);
+            vcsMarksGutter = initVcsMarksRuller(moduleHolder);
 
             orionSettingsController.updateSettings();
             widgetInitializedCallback.initialized(OrionEditorWidget.this);

@@ -120,6 +120,7 @@ import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.api.selection.Selection;
 import org.eclipse.che.ide.api.vcs.HasVcsMarkRender;
 import org.eclipse.che.ide.api.vcs.VcsMarkRender;
+import org.eclipse.che.ide.api.vcs.VcsMarkRenderFactory;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelDataOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelGroupOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelOverlay;
@@ -174,6 +175,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
     private final BreakpointManager                      breakpointManager;
     private final PreferencesManager                     preferencesManager;
     private final BreakpointRendererFactory              breakpointRendererFactory;
+    private final VcsMarkRenderFactory                   vcsMarkRenderFactory;
     private final DialogFactory                          dialogFactory;
     private final DocumentStorage                        documentStorage;
     private final EditorMultiPartStackPresenter          editorMultiPartStackPresenter;
@@ -191,7 +193,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
     private final EditorContextMenu                      contextMenu;
     private final AutoSaveMode                           autoSaveMode;
     private final ClientServerEventService               clientServerEventService;
-    private final Set<VcsMarkRender> vcsMarkRenders;
 
     private final AnnotationRendering rendering = new AnnotationRendering();
     private HasKeyBindings           keyBindingsManager;
@@ -217,6 +218,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
                                 final BreakpointManager breakpointManager,
                                 final PreferencesManager preferencesManager,
                                 final BreakpointRendererFactory breakpointRendererFactory,
+                                final VcsMarkRenderFactory vcsMarkRenderFactory,
                                 final DialogFactory dialogFactory,
                                 final DocumentStorage documentStorage,
                                 final EditorMultiPartStackPresenter editorMultiPartStackPresenter,
@@ -233,13 +235,13 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
                                 final SignatureHelpView signatureHelpView,
                                 final EditorContextMenu contextMenu,
                                 final AutoSaveMode autoSaveMode,
-                                final ClientServerEventService clientServerEventService,
-                                final Set<VcsMarkRender> vcsMarkRenders) {
+                                final ClientServerEventService clientServerEventService) {
         this.codeAssistantFactory = codeAssistantFactory;
         this.deletedFilesController = deletedFilesController;
         this.breakpointManager = breakpointManager;
         this.preferencesManager = preferencesManager;
         this.breakpointRendererFactory = breakpointRendererFactory;
+        this.vcsMarkRenderFactory = vcsMarkRenderFactory;
         this.dialogFactory = dialogFactory;
         this.documentStorage = documentStorage;
         this.editorMultiPartStackPresenter = editorMultiPartStackPresenter;
@@ -257,7 +259,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
         this.contextMenu = contextMenu;
         this.autoSaveMode = autoSaveMode;
         this.clientServerEventService = clientServerEventService;
-        this.vcsMarkRenders = vcsMarkRenders;
 
         keyBindingsManager = new TemporaryKeyBindingsManager();
 
@@ -658,8 +659,8 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
 
     @Override
     public BreakpointRenderer getBreakpointRenderer() {
-        if (this.breakpointRenderer == null && this.editorWidget != null && this instanceof HasGutter) {
-            this.breakpointRenderer = this.breakpointRendererFactory.create(((HasGutter)this).getGutter(),
+        if (this.breakpointRenderer == null && this.editorWidget != null) {
+            this.breakpointRenderer = this.breakpointRendererFactory.create(this.getGutter(GutterType.BREACKPOINT),
                                                                             this.editorWidget.getLineStyler(),
                                                                             this.document);
         }
@@ -667,8 +668,8 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
     }
 
     @Override
-    public VcsMarkRender getRender() {
-        return vcsMarkRenders.stream().findAny().get();
+    public VcsMarkRender getVcsMarkRender() {
+        return vcsMarkRenderFactory.create(getGutter(GutterType.VCS_MARK), editorWidget.getLineStyler(), document);
     }
 
     @Override
@@ -977,10 +978,10 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
     }
 
     @Override
-    public Gutter getGutter() {
+    public Gutter getGutter(GutterType type) {
         final EditorWidget editorWidget = getEditorWidget();
         if (editorWidget instanceof HasGutter) {
-            return ((HasGutter)editorWidget).getGutter();
+            return ((HasGutter)editorWidget).getGutter(type);
         } else {
             throw new IllegalStateException("incorrect editor state");
         }

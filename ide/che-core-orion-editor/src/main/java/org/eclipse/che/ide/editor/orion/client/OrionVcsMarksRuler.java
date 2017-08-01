@@ -12,6 +12,8 @@ package org.eclipse.che.ide.editor.orion.client;
 
 import elemental.dom.Element;
 
+import org.eclipse.che.ide.api.editor.gutter.Gutter;
+import org.eclipse.che.ide.api.editor.gutter.Gutters;
 import org.eclipse.che.ide.editor.orion.client.jso.ModelChangedEventOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationModelOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationOverlay;
@@ -19,8 +21,6 @@ import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionExtRulerOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionStyleOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionTextModelOverlay;
-import org.eclipse.che.ide.api.editor.gutter.Gutter;
-import org.eclipse.che.ide.api.editor.gutter.Gutters;
 import org.eclipse.che.ide.util.dom.Elements;
 
 /**
@@ -28,7 +28,7 @@ import org.eclipse.che.ide.util.dom.Elements;
  *
  * @author Anatoliy Bazko
  */
-public class OrionBreakpointRuler implements Gutter {
+public class OrionVcsMarksRuler implements Gutter {
 
     private static final String CHE_BREAKPOINT = "che.breakpoint";
 
@@ -38,7 +38,7 @@ public class OrionBreakpointRuler implements Gutter {
 
     private OrionTextModelOverlay.EventHandler<ModelChangedEventOverlay> modelChangingEventHandler;
 
-    public OrionBreakpointRuler(OrionExtRulerOverlay rulerOverlay, OrionEditorOverlay editorOverlay) {
+    public OrionVcsMarksRuler(OrionExtRulerOverlay rulerOverlay, OrionEditorOverlay editorOverlay) {
         this.orionExtRulerOverlay = rulerOverlay;
         this.editorOverlay = editorOverlay;
         this.orionExtRulerOverlay.addAnnotationType(CHE_BREAKPOINT, 1);
@@ -48,7 +48,7 @@ public class OrionBreakpointRuler implements Gutter {
     /** {@inheritDoc} */
     @Override
     public void addGutterItem(int line, String gutterId, Element element) {
-        if (!Gutters.BREAKPOINTS_GUTTER.equals(gutterId) && !Gutters.VCS_MARKS_GUTTER.equals(gutterId)) {
+        if (!Gutters.VCS_MARKS_GUTTER.equals(gutterId)) {
             return;
         }
 

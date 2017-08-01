@@ -8,21 +8,14 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.api.editor.gutter;
+package org.eclipse.che.ide.api.vcs;
 
-/**
- * Interface for components that manage a gutter.
- */
-public interface HasGutter {
+import org.eclipse.che.ide.api.editor.document.Document;
+import org.eclipse.che.ide.api.editor.gutter.Gutter;
+import org.eclipse.che.ide.api.editor.texteditor.LineStyler;
 
-    /**
-     * Returns the gutter.
-     *
-     * @return the gutter
-     */
-    Gutter getGutter(GutterType type);
-
-    enum GutterType {
-        BREACKPOINT, VCS_MARK
-    }
+public interface VcsMarkRenderFactory {
+    VcsMarkRender create(final Gutter hasGutter,
+                         final LineStyler lineStyler,
+                         final Document document);
 }

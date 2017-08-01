@@ -13,12 +13,14 @@ package org.eclipse.che.ide.ext.git.client;
 import org.eclipse.che.api.core.jsonrpc.commons.RequestHandlerConfigurator;
 import org.eclipse.che.api.git.shared.Status;
 import org.eclipse.che.api.project.shared.dto.event.GitChangeEventDto;
+import org.eclipse.che.ide.api.editor.AbstractEditorPresenter;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.notification.NotificationManager;
 import org.eclipse.che.ide.api.parts.EditorMultiPartStack;
 import org.eclipse.che.ide.api.parts.EditorTab;
 import org.eclipse.che.ide.api.resources.File;
 import org.eclipse.che.ide.api.resources.Resource;
+import org.eclipse.che.ide.api.vcs.HasVcsMarkRender;
 import org.eclipse.che.ide.api.vcs.VcsStatus;
 import org.eclipse.che.ide.part.explorer.project.ProjectExplorerPresenter;
 import org.eclipse.che.ide.resource.Path;
@@ -96,6 +98,12 @@ public class GitChangesHandler {
                                if (vcsStatus != null) {
                                    tab.setTitleColor(vcsStatus.getColor());
                                }
+                           });
+
+        editorAgentProvider.get()
+                           .getOpenedEditors()
+                           .forEach(editor -> {
+                               ((HasVcsMarkRender)editor).getVcsMarkRender().addVcsMark(3);
                            });
     }
 

@@ -118,6 +118,8 @@ import org.eclipse.che.ide.api.resources.ResourceChangedEvent;
 import org.eclipse.che.ide.api.resources.ResourceDelta;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.api.selection.Selection;
+import org.eclipse.che.ide.api.vcs.HasVcsMarkRender;
+import org.eclipse.che.ide.api.vcs.VcsMarkRender;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelDataOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelGroupOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionLinkedModelOverlay;
@@ -131,6 +133,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.Boolean.parseBoolean;
 import static org.eclipse.che.ide.api.notification.StatusNotification.DisplayMode.NOT_EMERGE_MODE;
@@ -149,6 +152,7 @@ import static org.eclipse.che.ide.api.resources.ResourceDelta.UPDATED;
 public class OrionEditorPresenter extends AbstractEditorPresenter implements TextEditor,
                                                                              UndoableEditor,
                                                                              HasBreakpointRenderer,
+                                                                             HasVcsMarkRender,
                                                                              HasReadOnlyProperty,
                                                                              HandlesTextOperations,
                                                                              EditorWithAutoSave,
@@ -187,6 +191,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
     private final EditorContextMenu                      contextMenu;
     private final AutoSaveMode                           autoSaveMode;
     private final ClientServerEventService               clientServerEventService;
+    private final Set<VcsMarkRender> vcsMarkRenders;
 
     private final AnnotationRendering rendering = new AnnotationRendering();
     private HasKeyBindings           keyBindingsManager;
@@ -228,7 +233,8 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
                                 final SignatureHelpView signatureHelpView,
                                 final EditorContextMenu contextMenu,
                                 final AutoSaveMode autoSaveMode,
-                                final ClientServerEventService clientServerEventService) {
+                                final ClientServerEventService clientServerEventService,
+                                final Set<VcsMarkRender> vcsMarkRenders) {
         this.codeAssistantFactory = codeAssistantFactory;
         this.deletedFilesController = deletedFilesController;
         this.breakpointManager = breakpointManager;
@@ -251,6 +257,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
         this.contextMenu = contextMenu;
         this.autoSaveMode = autoSaveMode;
         this.clientServerEventService = clientServerEventService;
+        this.vcsMarkRenders = vcsMarkRenders;
 
         keyBindingsManager = new TemporaryKeyBindingsManager();
 
@@ -657,6 +664,11 @@ public class OrionEditorPresenter extends AbstractEditorPresenter implements Tex
                                                                             this.document);
         }
         return this.breakpointRenderer;
+    }
+
+    @Override
+    public VcsMarkRender getRender() {
+        return vcsMarkRenders.stream().findAny().get();
     }
 
     @Override

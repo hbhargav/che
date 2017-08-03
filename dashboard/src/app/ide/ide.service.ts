@@ -95,10 +95,8 @@ class IdeSvc {
 
     this.updateRecentWorkspace(workspace.id);
 
-    let bus = this.cheAPI.getWebsocket().getBus();
-
     let startWorkspaceDefer = this.$q.defer();
-    this.startWorkspace(bus, workspace).then(() => {
+    this.startWorkspace(workspace).then(() => {
       // update list of workspaces
       // for new workspace to show in recent workspaces
       this.cheWorkspace.fetchWorkspaces();
@@ -121,7 +119,7 @@ class IdeSvc {
     return startWorkspaceDefer.promise;
   }
 
-  startWorkspace(bus: any, data: any): ng.IPromise<any> {
+  startWorkspace(data: any): ng.IPromise<any> {
     let startWorkspacePromise = this.cheAPI.getWorkspace().startWorkspace(data.id, data.config.defaultEnv);
     return startWorkspacePromise;
   }

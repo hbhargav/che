@@ -29,7 +29,6 @@ export class CreateProjectController {
   $rootScope: che.IRootScopeService;
   $scope: ng.IScope;
   $timeout: ng.ITimeoutService;
-  $websocket: ng.websocket.IWebSocketProvider;
   $window: ng.IWindowService;
   createProjectSvc: CreateProjectSvc;
   lodash: any;
@@ -47,8 +46,6 @@ export class CreateProjectController {
   selectSourceOption: string;
   templatesChoice: string;
   workspaceRam: number;
-  websocketReconnect: number;
-  messageBus: any;
   selectedTabIndex: number;
   currentTab: string;
   state: string;
@@ -69,8 +66,6 @@ export class CreateProjectController {
   workspaceConfig: any;
   stack: any;
   isCustomStack: boolean;
-  isHandleClose: boolean;
-  connectionClosed: Function;
 
   workspaceResourceForm: ng.IFormController;
   workspaceInformationForm: ng.IFormController;
@@ -87,13 +82,12 @@ export class CreateProjectController {
   constructor($document: ng.IDocumentService, $filter: ng.IFilterService, $location: ng.ILocationService,
               $log: ng.ILogService, $mdDialog: ng.material.IDialogService, $rootScope: che.IRootScopeService,
               $routeParams: che.route.IRouteParamsService, $q: ng.IQService, $scope: ng.IScope,
-              $timeout: ng.ITimeoutService, $websocket: ng.websocket.IWebSocketProvider, $window: ng.IWindowService,
+              $timeout: ng.ITimeoutService, $window: ng.IWindowService,
               lodash: any, cheAPI: CheAPI, cheStack: CheStack, createProjectSvc: CreateProjectSvc,
               cheNotification: CheNotification, cheEnvironmentRegistry: CheEnvironmentRegistry) {
     this.$log = $log;
     this.cheAPI = cheAPI;
     this.cheStack = cheStack;
-    this.$websocket = $websocket;
     this.$timeout = $timeout;
     this.$location = $location;
     this.$mdDialog = $mdDialog;
@@ -129,11 +123,9 @@ export class CreateProjectController {
 
     // default RAM value for workspaces
     this.workspaceRam = 2 * Math.pow(1024, 3);
-    this.websocketReconnect = 50;
 
     this.generateWorkspaceName();
 
-    this.messageBus = null;
 
     // search the selected tab
     let routeParams = $routeParams.tabName;
@@ -221,21 +213,6 @@ export class CreateProjectController {
 
     cheAPI.getWorkspace().getWorkspaces();
 
-    this.isHandleClose = true;
-    this.connectionClosed = () => {
-      if (!this.isHandleClose) {
-        return;
-      }
-
-      this.$mdDialog.show(
-        this.$mdDialog.alert()
-          .title('Connection error')
-          .content('Unable to track the workspace status due to connection closed error. Please, try again or restart the page.')
-          .ariaLabel('Workspace start')
-          .ok('OK')
-      );
-    };
-
     this.stacks = cheStack.getStacks();
     if (!this.stacks || !this.stacks.length) {
       cheStack.fetchStacks();
@@ -301,12 +278,9 @@ export class CreateProjectController {
         return workspace.config.name === workspaceName;
       });
       // check current workspace
-      if (findWorkspace) {
-        // init WS bus
-        this.messageBus = this.cheAPI.getWebsocket().getBus();
-      } else {
+      if (!findWorkspace) {
         this.resetCreateProgress();
-      }
+      };
     } else {
       let preselectWorkspaceId = this.$location.search().workspaceId;
       if (preselectWorkspaceId) {
@@ -438,7 +412,7 @@ export class CreateProjectController {
     return this.currentTab;
   }
 
-  startWorkspace(bus: any, workspace: che.IWorkspace): ng.IPromise<any> {
+  startWorkspace(workspace: che.IWorkspace): ng.IPromise<any> {
     // then we've to start workspace
     this.createProjectSvc.setCurrentProgressStep(1);
 
@@ -519,10 +493,7 @@ export class CreateProjectController {
       });
     }
 
-
-
     let startWorkspacePromise = this.cheAPI.getWorkspace().startWorkspace(workspace.id, workspace.config.defaultEnv);
-    bus.onClose(this.connectionClosed);
     startWorkspacePromise.then(() => {
       // update list of workspaces
       // for new workspace to show in recent workspaces
@@ -724,7 +695,6 @@ export class CreateProjectController {
    * Cleanup the websocket elements after actions are finished
    */
   cleanupChannels(websocketStream: any, workspaceBus: any, bus: any, channel: any): void {
-    this.isHandleClose = false;
     if (websocketStream != null) {
       websocketStream.close();
     }
@@ -796,7 +766,6 @@ export class CreateProjectController {
     websocketStream.onOpen(() => {
       let bus = this.cheAPI.getWebsocket().getExistingBus(websocketStream);
       this.createProjectInWorkspace(workspaceId, projectName, projectData, bus, websocketStream, workspaceBus);
-      bus.onClose(this.connectionClosed);
     });
 
     // on error, retry to connect or after a delay, abort
@@ -879,13 +848,12 @@ export class CreateProjectController {
         // on success, create project
         websocketStream.onOpen(() => {
           let bus = this.cheAPI.getWebsocket().getExistingBus(websocketStream);
-          this.createProjectInWorkspace(workspace.id, this.projectName, this.importProjectData, bus);
+          this.createProjectInWorkspace(workspace.id, this.projectName, this.importProjectData);
         });
       });
     } else {
       this.subscribeStatusChannel(workspace);
-      let bus = this.cheAPI.getWebsocket().getBus();
-      this.startWorkspace(bus, workspace);
+      this.startWorkspace(workspace);
     }
   }
 
@@ -918,7 +886,7 @@ export class CreateProjectController {
           bus = this.cheAPI.getWebsocket().getBus();
         // try to connect
         this.websocketReconnect = 10;
-        this.connectToExtensionServer(websocketUrl, workspace.id, this.importProjectData.project.name, this.importProjectData, bus);
+        this.connectToExtensionServer(websocketUrl, workspace.id, this.importProjectData.project.name, this.importProjectData);
       });
     });
   }
@@ -936,18 +904,12 @@ export class CreateProjectController {
       this.createProjectSvc.setWorkspaceNamespace(workspace.namespace);
       this.updateRecentWorkspace(workspace.id);
 
-      // init message bus if not there
-      if (this.workspaces.length === 0) {
-        this.messageBus = this.cheAPI.getWebsocket().getBus();
-      }
-
       this.cheAPI.getWorkspace().fetchWorkspaceDetails(workspace.id).then(() => {
         this.subscribeStatusChannel(workspace);
       });
 
       this.$timeout(() => {
-        let bus = this.cheAPI.getWebsocket().getBus();
-        this.startWorkspace(bus, workspace);
+        this.startWorkspace(workspace);
       }, 1000);
 
     }, (error: any) => {

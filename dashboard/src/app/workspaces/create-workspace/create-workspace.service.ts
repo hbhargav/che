@@ -159,6 +159,7 @@ export class CreateWorkspaceSvc {
           projectTemplates = this.projectSourceSelectorService.getProjectTemplates();
 
     return this.checkEditingProgress().then(() => {
+      //TODO workspaceConfig.projects = projectTemplates;
       return this.cheWorkspace.createWorkspaceFromConfig(namespaceId, workspaceConfig, attributes).then((workspace: che.IWorkspace) => {
 
         return this.cheWorkspace.startWorkspace(workspace.id, workspace.config.defaultEnv).then(() => {

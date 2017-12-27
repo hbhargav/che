@@ -2947,5 +2947,74 @@
         }
       ]
     }
+  },
+  {
+    "id": "rust-default",
+    "creator": "corrode.sh",
+    "name": "Rust",
+    "description": "Default Rust Stack, nightly 2017-11-30",
+    "scope": "general",
+    "tags": [
+      "rust",
+      "cargo"
+    ],
+    "components": [
+      {
+        "name": "Rust",
+        "version": "nightly, 2017-11-30"
+      }
+    ],
+    "source": {
+      "type": "image",
+      "origin": "corrode/rust:latest"
+    },
+    "workspaceConfig": {
+      "environments": {
+        "default": {
+          "machines": {
+            "dev-machine": {
+              "installers": [
+                "org.eclipse.che.exec", "org.eclipse.che.terminal", "org.eclipse.che.ws-agent", "org.eclipse.che.ls.python"
+              ],
+              "servers": {
+                "8080/tcp" : {
+                  "port" : "8080",
+                  "protocol" : "http"
+                },
+                "8000/tcp" : {
+                  "port" : "8000",
+                  "protocol" : "http"
+                }
+              },
+              "attributes" : {
+                "memoryLimitBytes": "2147483648"
+              }
+            }
+          },
+          "recipe": {
+            "location": "corrode/rust:latest",
+            "type": "dockerimage"
+          }
+        }
+      },
+      "name": "default",
+      "defaultEnv": "default",
+      "description": null,
+      "commands": [
+        {
+          "name": "cargo version",
+          "type": "custom",
+          "commandLine": "echo $(cargo --version)",
+          "attributes": {
+            "previewUrl": "",
+            "goal": "Run"
+          }
+        }
+      ]
+    },
+    "stackIcon": {
+      "name": "type-python.svg",
+      "mediaType": "image/svg+xml"
+    }
   }
 ]

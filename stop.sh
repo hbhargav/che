@@ -25,7 +25,7 @@ esac
 docker run --dns 8.8.8.8 -it --rm ${DOCKER_RUN_OPTIONS} \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "$DATA_MOUNT:/data" \
-    -v "$PWD/assembly/assembly-main/target/eclipse-che-6.0.0-M4-SNAPSHOT/eclipse-che-6.0.0-M4-SNAPSHOT" \
+    -v "$PWD/assembly/assembly-main/target/eclipse-che-6.0.0-M4-SNAPSHOT/eclipse-che-6.0.0-M4-SNAPSHOT:/assembly" \
     eclipse/che-cli:nightly stop
 
 docker stop $(docker ps -aq) || true

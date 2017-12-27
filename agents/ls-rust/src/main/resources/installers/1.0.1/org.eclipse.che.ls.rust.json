@@ -1,0 +1,8 @@
+{
+  "id": "org.eclipse.che.ls.rust",
+  "version": "1.0.1",
+  "name": "Rust language server (Rls)",
+  "description": "Intellisense for Rust projects.",
+  "dependencies": [],
+  "properties": {}
+}

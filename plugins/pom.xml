@@ -42,7 +42,7 @@
         <module>plugin-github</module>
         <module>plugin-dashboard</module>
         <module>plugin-gwt</module>
-        <module>plugin-python</module>
+        <module>plugin-rust</module>
         <module>plugin-cpp</module>
         <module>plugin-csharp</module>
         <module>plugin-nodejs</module>

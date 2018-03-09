@@ -74,8 +74,21 @@ public class SinglePortHostnameBuilder {
    * @return wildcard domain
    */
   private String getWildcardDomain(String localAddress, String wildcardHost) {
-    return String.format(
-        "%s.%s", getExternalIp(localAddress), wildcardHost == null ? "nip.io" : wildcardHost);
+    // todo: reenable nip.io etc if these are selected (not null) as wildcard (no ip added right
+    // now)
+    if (wildcardDomain == null) {
+      return String.format("%s.%s", getExternalIp(localAddress), "nip.io");
+    } else if (wildcardDomain.contains("nip.io") || wildcardDomain.contains("xip.io")) {
+      return String.format("%s.%s", getExternalIp(localAddress), wildcardHost);
+    } else {
+      // custom dns
+      return wildcardHost;
+    }
+    // return wildcardHost == null
+    //     ? String.format("%s.%s", getExternalIp(localAddress), "nip.io")
+    //     : wildcardHost;
+    // return String.format(
+    //     "%s.%s", getExternalIp(localAddress), wildcardHost == null ? "nip.io" : wildcardHost);
   }
 
   private String getExternalIp(String localAddress) {

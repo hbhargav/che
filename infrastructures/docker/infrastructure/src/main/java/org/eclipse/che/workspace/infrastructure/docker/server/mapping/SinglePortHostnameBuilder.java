@@ -54,7 +54,7 @@ public class SinglePortHostnameBuilder {
    * @return composite hostname
    */
   public String build(String serverName, String machineName, String workspaceID) {
-    StringJoiner joiner = new StringJoiner(".");
+    StringJoiner joiner = new StringJoiner("_");
     if (serverName != null) {
       joiner.add(normalize(serverName));
     }
@@ -64,8 +64,8 @@ public class SinglePortHostnameBuilder {
     if (workspaceID != null) {
       joiner.add(normalize(workspaceID));
     }
-    joiner.add(wildcardDomain);
-    return joiner.toString();
+    // joiner.add(wildcardDomain);
+    return joiner.toString() + "." + wildcardDomain;
   }
 
   /**

@@ -122,10 +122,11 @@ public class SinglePortLabelsProvisioner implements ConfigurationProvisioner {
    * exec-agent-http-dev-machine-workspaceao6k83hkdav975g5
    */
   private String getServiceName(String host) {
-    int idx =
-        (externalIpOfContainers != null && host.contains(externalIpOfContainers))
-            ? host.indexOf(externalIpOfContainers)
-            : host.indexOf(internalIpOfContainers);
-    return host.substring(0, idx - 1).replaceAll("\\.", "-");
+    // int idx =
+    //     (externalIpOfContainers != null && host.contains(externalIpOfContainers))
+    //         ? host.indexOf(externalIpOfContainers)
+    //         : host.indexOf(internalIpOfContainers);
+    // return host.substring(0, idx - 1).replaceAll("\\.", "-");
+    return host.replaceAll("\\.", "-");
   }
 }

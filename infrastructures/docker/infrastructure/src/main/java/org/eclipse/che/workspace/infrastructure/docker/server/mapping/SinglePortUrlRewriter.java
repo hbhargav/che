@@ -71,9 +71,11 @@ public class SinglePortUrlRewriter implements URLRewriter {
         url = url.replace("ws://", "wss://");
         url = url.replace("http://", "https://");
       }
-      // replace ports for anything passing through traefik, no need to rewrite the ports of http or
-      // ws
-      if (url.contains("https://") || url.contains("wss://")) {
+      // replace ports for anything passing through traefik (e.g. http, https, ws, wss)
+      if (url.contains("http://")
+          || url.contains("https://")
+          || url.contains("ws://")
+          || url.contains("wss://")) {
         url = UriBuilder.fromUri(url).port(chePort).build().toString();
       }
     } catch (UriBuilderException | IllegalArgumentException e) {

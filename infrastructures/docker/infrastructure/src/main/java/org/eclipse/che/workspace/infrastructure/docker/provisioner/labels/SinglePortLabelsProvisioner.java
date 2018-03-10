@@ -84,6 +84,7 @@ public class SinglePortLabelsProvisioner implements ConfigurationProvisioner {
         // final String protocol = serverEntry.getValue().getPort().split("/")[1];
         final String protocol = serverEntry.getValue().getProtocol();
         if (cheHostProtocol.equals("https")) {
+          // rewrite to use https and wss
           if (protocol.equals("ws") || protocol.equals("http")) {
             containerLabels.put(
                 format("traefik.%s.frontend.entryPoints", serviceName), "https,wss");
@@ -100,8 +101,8 @@ public class SinglePortLabelsProvisioner implements ConfigurationProvisioner {
           }
         }
         containerLabels.put(format("traefik.%s.port", serviceName), port);
-//        containerLabels.put(
-//            format("traefik.%s.frontend.entryPoints", serviceName), cheHostProtocol);
+        //        containerLabels.put(
+        //            format("traefik.%s.frontend.entryPoints", serviceName), cheHostProtocol);
         containerLabels.put(format("traefik.%s.frontend.rule", serviceName), "Host:" + host);
         // Needed to activate per-service rules
         containerLabels.put("traefik.frontend.rule", machineName);

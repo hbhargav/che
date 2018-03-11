@@ -238,7 +238,6 @@ skip_scripts() {
 cli_init() {
   CHE_HOST=$(eval "echo \$${CHE_PRODUCT_NAME}_HOST")
   CHE_PORT=$(eval "echo \$${CHE_PRODUCT_NAME}_PORT")
-  #CHE_HOST_PROTOCOL=$(eval "echo \$${CHE_PRODUCT_NAME}_HOST_PROTOCOL")
 
   if [[ "$(eval "echo \$${CHE_PRODUCT_NAME}_HOST")" = "" ]]; then
     info "Welcome to $CHE_FORMAL_PRODUCT_NAME!"

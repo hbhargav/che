@@ -16,7 +16,6 @@ cli_post_init() {
 cli_init() {
   CHE_HOST=$(eval "echo \$${CHE_PRODUCT_NAME}_HOST")
   CHE_PORT=$(eval "echo \$${CHE_PRODUCT_NAME}_PORT")
-  #CHE_HOST_PROTOCOL=$(eval "echo \$${CHE_PRODUCT_NAME}_HOST_PROTOCOL")
 
   if [[ "$(eval "echo \$${CHE_PRODUCT_NAME}_HOST")" = "" ]]; then
     info "Welcome to $CHE_FORMAL_PRODUCT_NAME!"
@@ -50,16 +49,12 @@ cli_init() {
       CHE_HOST=$CHE_HOST_ENV
     fi
 
-    echo "Updating CHE_HOST_PROTOCOL";
     CHE_HOST_PROTOCOL_ENV=$(get_value_of_var_from_env_file ${CHE_PRODUCT_NAME}_HOST_PROTOCOL)
-    echo "Right now it is: CHE_HOST_PROTOCOL=${CHE_HOST_PROTOCOL} and CHE_HOST_PROTOCOL_ENV=${CHE_HOST_PROTOCOL_ENV}"
     if [[ "${CHE_HOST_PROTOCOL_ENV}" != "" ]]; then
       CHE_HOST_PROTOCOL=${CHE_HOST_PROTOCOL_ENV}
     else
-      echo "set CHE_HOST_PROTOCOL=http because ENV was empty"
       CHE_HOST_PROTOCOL="http"
     fi
-    echo "Updated. Now it is: CHE_HOST_PROTOCOL=${CHE_HOST_PROTOCOL} and CHE_HOST_PROTOCOL_ENV=${CHE_HOST_PROTOCOL_ENV}"
 
     if [[ "${CHE_HOST_ENV}" = "" ]] && 
        [[ "${CHE_HOST_LOCAL}" != "" ]]; then

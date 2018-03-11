@@ -64,7 +64,6 @@ get_debug_display_url() {
 
 server_is_booted() {
   PING_URL=$(get_boot_url)
-  echo "Starting curl with protocol: ${CHE_HOST_PROTOCOL}"
   HTTP_STATUS_CODE=$(curl -I -k ${CHE_HOST_PROTOCOL}://${PING_URL} -s -o /dev/null --write-out '%{http_code}')
   log "${HTTP_STATUS_CODE}"
   if [[ "${HTTP_STATUS_CODE}" = "200" ]] || [[ "${HTTP_STATUS_CODE}" = "302" ]]; then

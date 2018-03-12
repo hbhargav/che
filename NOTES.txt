@@ -1,0 +1,30 @@
+Next steps:
+- Run end to end test on silexica server with https enabled (should work out of the box with this branch)
+- add certificate switch ENV for acme etc
+
+TODO:
+- cert file / self signed / acme staging / acme production switch
+- fix IMAGE_KEYCLOACK -> IMAGE_KEYCLOAK
+- patch :443 and :80 in webOrigin etc (keycloak config)
+- patch keycloak / nip io into keycloak config for webOrigin
+
+you will get an execption with self signed certificates, because che goes through traefik to connect to keycloak:
+Exception during retrieval of the Keycloak realm public key
+javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative DNS name matching keycloak.172.17.0.1.nip.io found.
+
+
+works (http 80 singleport)
+docker run -it --rm -e CHE_MULTIUSER=true -e CHE_PORT=80 -e CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v "/home/hk/.che6mu-singleport/sample/data:/data" -v $PWD:/repo -v$PWD/assembly/assembly-main/target/eclipse-che-6.2.0/eclipse-che-6.2.0 eclipse/che-cli:6.2.0 start --debug --fast
+
+
+works:
+docker run -it --rm -e CHE_MULTIUSER=true -e CHE_PORT=443 -e CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v "/home/hk/.che6mu-singleport/sample/data:/data" -v $PWD:/repo -v$PWD/assembly/assembly-main/target/eclipse-che-6.2.0/eclipse-che-6.2.0 eclipse/che-cli:6.2.0 start --debug --fast
+
+
+
+works (with self signed certificates):
+docker run -it --rm -e CHE_HOST_PROTOCOL=https -e CHE_MULTIUSER=true -e CHE_PORT=443 -e CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v "/home/hk/.che6mu-singleport/sample/data:/data" -v $PWD:/repo -v$PWD/assembly/assembly-main/target/eclipse-che-6.2.0/eclipse-che-6.2.0 eclipse/che-cli:6.2.0 start --debug --fast
+
+
+not working with localhost, but works with $(hostname -f), if it is a FQDN and the local dns maps *.$(hostname -f) through a wildcard entry:
+docker run -it --rm -e CHE_SINGLEPORT_WILDCARD__DOMAIN_IPLESS=true -e CHE_SINGLEPORT_WILDCARD__DOMAIN_HOST=$(hostname -f) -e CHE_HOST=$(hostname -f) -e CHE_MULTIUSER=true -e CHE_PORT=80 -e CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v "/home/hk/.che6mu-singleport/sample/data:/data" -v $PWD:/repo -v$PWD/assembly/assembly-main/target/eclipse-che-6.2.0/eclipse-che-6.2.0 eclipse/che-cli:6.2.0 start --debug --fast

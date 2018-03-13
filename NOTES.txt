@@ -1,3 +1,47 @@
+Found problem with bootstrapper:
+
+This is how the container looks with http:
+ubuntu@ip-172-31-38-251:~/slx.cloud-che$ docker exec -it workspace5d643c3l9qd7ktcm_null_slxcloudtestuser_dev-machine /bin/bash
+user@3039d972bc2b:/projects$ ps ax
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:00 /bin/sh -c tail -f /dev/null
+   12 ?        S      0:00 sudo /usr/sbin/sshd -D
+   13 ?        S      0:00 tail -f /dev/null
+   14 ?        S      0:00 /usr/sbin/sshd -D
+   15 ?        Ss     0:00 /bin/sh -c /tmp/bootstrapper/bootstrapper -machine-na
+   21 ?        Sl     0:00 /tmp/bootstrapper/bootstrapper -machine-name dev-mach
+   26 ?        Ss     0:00 /bin/sh -c # # Copyright (c) 2012-2018 Red Hat, Inc. 
+   52 ?        Sl     0:00 /home/user/che/terminal/che-websocket-terminal -addr 
+   59 ?        Ss     0:00 /bin/sh -c # # Copyright (c) 2012-2018 Red Hat, Inc. 
+  116 ?        Sl     0:22 /usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java -Djava
+  206 pts/0    Ss+    0:00 /bin/bash
+  296 pts/1    Ss     0:00 /bin/bash
+  344 pts/1    R+     0:00 ps ax
+user@3039d972bc2b:/projects$ 
+
+curl works: curl -v wsagent-ws_dev-machine_workspace5d643c3l9qd7ktcm.slx.cloud
+* Rebuilt URL to: wsagent-ws_dev-machine_workspace5d643c3l9qd7ktcm.slx.cloud/
+*   Trying 35.172.202.160...
+* Connected to wsagent-ws_dev-machine_workspace5d643c3l9qd7ktcm.slx.cloud (35.172.202.160) port 80 (#0)
+> GET / HTTP/1.1
+> Host: wsagent-ws_dev-machine_workspace5d643c3l9qd7ktcm.slx.cloud
+> User-Agent: curl/7.47.0
+> Accept: */*
+> 
+< HTTP/1.1 401 Unauthorized
+< Content-Language: en
+< Content-Length: 1105
+< Content-Type: text/html;charset=utf-8
+< Date: Tue, 13 Mar 2018 16:32:14 GMT
+< 
+<!doctype html><html lang="en"><head><title>HTTP Status 401 – Unauthorized</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Authentication on machine failed, token is missed</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the t* Connection #0 to host wsagent-ws_dev-machine_workspace5d643c3l9qd7ktcm.slx.cloud left intact
+arget resource.</p><hr class="line" /><h3>Apache Tomcat/8.5.23</h3></body></html>
+
+
+HTTPS refuses connection (even internally behind traefik with http)
+
+
+
 Next steps:
 - Run end to end test on silexica server with https enabled (should work out of the box with this branch)
 - add certificate switch ENV for acme etc

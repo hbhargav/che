@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Named;
 import org.eclipse.che.api.core.model.workspace.config.ServerConfig;
+import org.eclipse.che.api.core.model.workspace.runtime.ServerStatus;
 import org.eclipse.che.api.workspace.server.model.impl.ServerImpl;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
 import org.eclipse.che.commons.annotation.Nullable;
@@ -126,7 +127,8 @@ public class ServersMapper {
               ref,
               new ServerImpl()
                   .withUrl(makeUrl(port, cfg, hostname))
-                  .withAttributes(cfg.getAttributes()));
+                  .withAttributes(cfg.getAttributes())
+                  .withStatus(ServerStatus.UNKNOWN));
         }
       }
     }

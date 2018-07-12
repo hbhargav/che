@@ -40,7 +40,7 @@ init() {
 
   ORGANIZATION="eclipse"
   PREFIX="che"
-  TAG="nightly"
+  TAG="6.8.0"
   SKIP_TESTS=false
   NAME="che"
   ARGS=""

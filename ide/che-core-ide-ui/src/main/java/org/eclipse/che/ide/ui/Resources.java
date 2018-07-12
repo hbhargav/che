@@ -15,10 +15,10 @@ import org.vectomatic.dom.svg.ui.SVGResource;
 /** @author Vitaly Parfonov */
 public interface Resources extends com.google.gwt.resources.client.ClientBundle {
 
-  @Source("logo/che-logo.svg")
+  @Source("logo/kodepro-logo.svg")
   SVGResource logo();
 
-  @Source("logo/water-mark-logo.svg")
+  @Source("logo/kodepro-water-mark-logo.svg")
   SVGResource waterMarkLogo();
 
   @Source({"Styles.css", "org/eclipse/che/ide/api/ui/style.css"})

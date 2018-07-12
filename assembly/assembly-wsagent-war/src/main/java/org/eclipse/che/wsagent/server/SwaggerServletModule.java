@@ -26,7 +26,7 @@ public class SwaggerServletModule extends ServletModule {
             io.swagger.jaxrs.config.DefaultJaxrsConfig.class,
             ImmutableMap.of(
                 "api.version", "1.0",
-                "swagger.api.title", "Eclipse Che",
+                "swagger.api.title", "KodePro",
                 "swagger.api.basepath", "/api"));
   }
 }

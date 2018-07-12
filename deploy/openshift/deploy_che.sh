@@ -434,6 +434,6 @@ ${CHE_VAR_ARRAY}"
 }
 
 isLoggedIn
-createNewProject
+#createNewProject
 getRoutingSuffix
 deployChe

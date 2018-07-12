@@ -93,7 +93,7 @@ public class RedirectToDashboardAction extends BaseAction
           });
       DOM.sinkEvents(arrow, Event.ONMOUSEDOWN);
     } else {
-      arrow = DOM.createAnchor();
+      /*arrow = DOM.createAnchor();
       arrow.setClassName(resources.dashboardCSS().dashboardArrow());
       panel.getElement().appendChild(arrow);
 
@@ -109,7 +109,7 @@ public class RedirectToDashboardAction extends BaseAction
       arrow.setAttribute(
           "href",
           constant.openDashboardUrlWorkspace(appContext.getWorkspace().getConfig().getName()));
-      arrow.setAttribute("target", "_blank");
+      arrow.setAttribute("target", "_blank");*/
     }
 
     return panel;

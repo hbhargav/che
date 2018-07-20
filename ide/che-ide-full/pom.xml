@@ -26,6 +26,11 @@
     <description>Che IDE includes all plugins</description>
     <dependencies>
         <dependency>
+            <groupId>com.talfinder.che.plugin</groupId>
+            <artifactId>che-plugin-talfinder-help-ext-client</artifactId>
+            <type>gwt-lib</type>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-ide-core</artifactId>
             <type>gwt-lib</type>

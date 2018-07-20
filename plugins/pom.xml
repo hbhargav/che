@@ -61,5 +61,6 @@
         <module>plugin-ceylon</module>
         <module>plugin-clangd</module>
         <module>plugin-golang</module>
+        <module>plugin-talfinder</module>
     </modules>
 </project>

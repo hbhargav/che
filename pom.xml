@@ -60,6 +60,12 @@
                 <version>${version.jsr305.plugin}</version>
             </dependency>
             <dependency>
+                <groupId>com.talfinder.che.plugin</groupId>
+                <artifactId>che-plugin-talfinder-help-ext-client</artifactId>
+                <version>${che.version}</version>
+                <type>gwt-lib</type>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
                 <version>${org.apache.tomcat.version}</version>

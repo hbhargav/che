@@ -122,7 +122,7 @@ objects:
           - name: CHE_OAUTH_GITHUB_CLIENTSECRET
             value: "${CHE_OAUTH_GITHUB_CLIENTSECRET}"
           - name: CHE_PREDEFINED_STACKS_RELOAD__ON__START
-            value: 'false'
+            value: 'true'
           - name: JAVA_OPTS
             value: "-XX:MaxRAMFraction=2 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
               -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90
@@ -145,13 +145,15 @@ objects:
           - name: CHE_WORKSPACE_FEATURE_API
             value: "http://marketplace:80"
           - name: CHE_JDBC_URL
-            value: "jdbc:postgresql://che-6-migration.ctd9e0mybjq3.ap-south-1.rds.amazonaws.com:5432/che"
+            value: "jdbc:postgresql://pg-kodepro-keycloak-prod.ctd9e0mybjq3.ap-south-1.rds.amazonaws.com:5432/cheprod"
           - name: CHE_JDBC_USERNAME
-            value: "che"
+            value: "cheprod"
           - name: CHE_JDBC_PASSWORD
-            value: "chepassword"
+            value: "cheprod"
           - name: CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE
             value: "ReadWriteMany"
+          - name: CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT
+            value: "14400000"
           image: ${IMAGE_CHE}:${CHE_VERSION}
           imagePullPolicy: "${PULL_POLICY}"
           livenessProbe:

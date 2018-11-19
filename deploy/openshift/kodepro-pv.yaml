@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: prod-che-server
+  spec:
+    capacity:
+      storage: 1Gi
+    accessModes:
+      - ReadWriteOnce
+    hostPath:
+        path: "/mnt/che-server/prod"
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    claimRef:
+        name: che-data-volume
+        namespace: prod
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: prod-che-workspace
+  spec:
+    capacity:
+      storage: 150Gi
+    accessModes:
+      - ReadWriteOnce
+    hostPath:
+        path: "/mnt/ebs-kodepro-data/che/prod/projects"
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    claimRef:
+        name: claim-che-workspace
+        namespace: prod
